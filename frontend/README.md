@@ -3,7 +3,7 @@
 ### An AI-powered exploration experience for the things we usually overlook.
 
 <p align="center">
-  <a href="https://outverse-tau.vercel.app">
+  <a href="https://outverse-touchgrass.vercel.app">
     <strong>🌐 Explore Outverse — Live App</strong>
   </a>
   &nbsp; · &nbsp;
