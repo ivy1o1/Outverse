@@ -1,0 +1,117 @@
+/* Official React Bits FlowingMenu stylesheet, renamed for Outverse and
+   recoloured to the Outverse palette. Source:
+   DavidHDev/react-bits — src/ts-default/Components/FlowingMenu/FlowingMenu.css
+   (MIT + Commons Clause v1.0). Layout mechanics unchanged. */
+
+.flowing-menu {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.flowing-menu__item {
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid var(--border-subtle);
+}
+.flowing-menu__link {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  width: 100%;
+  padding: clamp(1.4rem, 3.2vw, 2.4rem) clamp(0.25rem, 2vw, 1.5rem);
+  position: relative;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--text-main);
+}
+.flowing-menu__index {
+  color: var(--color-ember-glow);
+  flex-shrink: 0;
+}
+.flowing-menu__text {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 5.2vw, 3.4rem);
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.flowing-menu__link:hover .flowing-menu__text {
+  transform: translateX(0.35rem);
+}
+.flowing-menu__arrow {
+  margin-left: auto;
+  font-size: clamp(1.2rem, 2.4vw, 1.8rem);
+  color: var(--text-muted);
+  transition:
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.4s ease;
+}
+.flowing-menu__link:hover .flowing-menu__arrow,
+.flowing-menu__link:focus-visible .flowing-menu__arrow {
+  transform: translateX(0.4rem);
+  color: var(--color-ember-glow);
+}
+.flowing-marquee {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transform: translate3d(0, 101%, 0);
+  background: var(--color-parchment);
+}
+.flowing-marquee__inner-wrap {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+.flowing-marquee__inner {
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: 100%;
+  width: fit-content;
+  will-change: transform;
+}
+.flowing-marquee__part {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.flowing-marquee__part span {
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 5.2vw, 3.4rem);
+  line-height: 1;
+  letter-spacing: -0.015em;
+  padding: 0 1vw;
+  color: var(--color-ink);
+}
+.flowing-marquee__figure {
+  width: 190px;
+  height: clamp(2.2rem, 5vh, 3.4rem);
+  margin: 0 2vw;
+  display: flex;
+  align-items: center;
+  color: var(--color-moss-ink);
+}
+.flowing-marquee__figure svg {
+  width: 100%;
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flowing-marquee {
+    display: none;
+  }
+  .flowing-menu__text {
+    transition: none;
+  }
+}

@@ -1,111 +1,210 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Outverse design tokens
+   Core palette: forest green, moss green, warm parchment, burnt orange.
+   Extra shades are compatible extensions for contrast/readability only.
+--------------------------------------------------------------------------- */
+
+@theme {
+  --color-forest: #40513b;
+  --color-forest-deep: #2b3628;
+  --color-forest-shadow: #1d251b;
+  --color-forest-veil: #35422f;
+
+  --color-moss: #628141;
+  --color-moss-soft: #7d9a5b;
+  --color-moss-ink: #465d2c;
+
+  --color-parchment: #e5d9b6;
+  --color-parchment-soft: #f0e8ce;
+  --color-parchment-deep: #d6c79c;
+  --color-parchment-dim: #c4b58c;
+
+  --color-ember: #e67e22;
+  --color-ember-deep: #b45f14;
+  --color-ember-ink: #8f4a10;
+  /* Lightened tint of the same hue, for small text on dark surfaces where
+     plain ember lands just under the 4.5:1 contrast threshold. */
+  --color-ember-glow: #f5a04a;
+
+  --color-ink: #23291f;
+  --color-ink-soft: #4c5344;
+  --color-muted-light: #b9b294;
+  --color-muted-dark: #5c5844;
+
+  --color-error: #93311b;
+  --color-error-soft: #e0765a;
+
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-body: "Inter", system-ui, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+/* Semantic tokens consumed by components via var(...) */
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --surface-primary: var(--color-forest-shadow);
+  --surface-secondary: var(--color-forest-deep);
+  --surface-raised: var(--color-forest);
+  --surface-paper: var(--color-parchment);
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  --text-main: var(--color-parchment-soft);
+  --text-on-paper: var(--color-ink);
+  --text-muted: var(--color-muted-light);
+  --text-muted-on-paper: var(--color-muted-dark);
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --border-subtle: rgba(229, 217, 182, 0.18);
+  --border-paper: rgba(35, 41, 31, 0.16);
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
+  --accent: var(--color-ember);
+  --accent-on-paper: var(--color-ember-ink);
+  --selected: var(--color-moss);
+
+  --error: var(--color-error);
+  --success: var(--color-moss-ink);
+  --focus-ring: var(--color-ember);
+
+  color-scheme: dark;
+}
+
+html {
+  /* Lenis drives native scroll; CSS smooth-scroll would fight it. */
+  background: var(--surface-primary);
+}
+
+@layer base {
+  body {
+    margin: 0;
+    min-height: 100svh;
+    background: var(--surface-primary);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  #root {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    color: var(--text-main);
+    text-wrap: balance;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  button {
+    font-family: inherit;
+  }
+
+  /* Visible, consistent focus ring everywhere */
+  :where(a, button, [tabindex], input, textarea, select):focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* On parchment surfaces the ember ring only reaches 2.03:1 against the
+     background; ember-ink reaches 4.73:1 and keeps the ring AA-compliant
+     without changing the ring on dark surfaces. */
+  :where([class*="bg-parchment"], .paper-texture) :focus-visible,
+  :where([class*="bg-parchment"], .paper-texture):focus-visible {
+    outline-color: var(--color-ember-ink);
+  }
+
+  ::selection {
+    background: rgba(230, 126, 34, 0.35);
+    color: var(--color-parchment-soft);
+  }
+
+  /* Thin custom scrollbar to keep the atmosphere on wide screens */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(229, 217, 182, 0.28) transparent;
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+/* --- Textures ---------------------------------------------------------- */
+
+/* Fine organic paper grain for parchment surfaces (no images required). */
+.paper-texture {
+  background-image:
+    radial-gradient(
+      circle at 18% 22%,
+      rgba(140, 120, 70, 0.09) 0,
+      rgba(140, 120, 70, 0) 42%
+    ),
+    radial-gradient(
+      circle at 82% 12%,
+      rgba(140, 120, 70, 0.07) 0,
+      rgba(140, 120, 70, 0) 38%
+    ),
+    radial-gradient(
+      circle at 62% 78%,
+      rgba(96, 80, 44, 0.08) 0,
+      rgba(96, 80, 44, 0) 46%
+    ),
+    repeating-linear-gradient(
+      94deg,
+      rgba(96, 80, 44, 0.028) 0px,
+      rgba(96, 80, 44, 0.028) 1px,
+      rgba(96, 80, 44, 0) 3px,
+      rgba(96, 80, 44, 0) 7px
+    );
+}
+
+/* Very subtle atmosphere for dark sections. */
+.atmosphere-texture {
+  background-image:
+    radial-gradient(
+      ellipse 70% 55% at 78% 8%,
+      rgba(98, 129, 65, 0.16) 0,
+      rgba(98, 129, 65, 0) 70%
+    ),
+    radial-gradient(
+      ellipse 60% 50% at 12% 92%,
+      rgba(230, 126, 34, 0.08) 0,
+      rgba(230, 126, 34, 0) 68%
+    );
+}
+
+/* Utility: eyebrow / metadata label */
+.label-caps {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+/* Reduced motion: neutralize CSS-driven animation and smooth scrolling.
+   JS-driven motion (Framer Motion) is guarded per-component via
+   useReducedMotion() in each animated component. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
-}
-
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-}
-
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
-}
-
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
 }
