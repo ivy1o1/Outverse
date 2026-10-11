@@ -32,8 +32,6 @@ class Settings(BaseSettings):
 def get_settings() -> Settings:
     return Settings()
 
-
-@lru_cache
 def get_client() -> genai.Client:
     settings = get_settings()
     if not settings.gemini_api_key:
@@ -43,36 +41,26 @@ def get_client() -> genai.Client:
 
 
 
+
 def generate_text(prompt: str, max_tokens: int = 3000) -> str:
     settings = get_settings()
-    response = get_client().models.generate_content(
-        model=settings.gemma_model,
-        contents=prompt,
-        config=types.GenerateContentConfig(
-            temperature=0.3,
-            max_output_tokens=max_tokens,
-            thinking_config=types.ThinkingConfig(
-                thinking_level="minimal",
+
+    if not settings.gemini_api_key:
+        raise RuntimeError("GEMINI_API_KEY is not configured.")
+
+    # Keep the client alive throughout the request and close it safely afterward.
+    with genai.Client(api_key=settings.gemini_api_key) as client:
+        response = client.models.generate_content(
+            model=settings.gemma_model,
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                temperature=0.3,
+                max_output_tokens=max_tokens,
+                thinking_config=types.ThinkingConfig(
+                    thinking_level="minimal",
                 ),
             ),
         )
-
-    for index, candidate in enumerate(response.candidates or []):
-        print(f"DEBUG candidate {index} finish_reason:", candidate.finish_reason)
-        content = candidate.content
-
-        if not content:
-            print("DEBUG candidate has no content")
-            continue
-
-        for part_index, part in enumerate(content.parts or []):
-            part_text = getattr(part, "text", None)
-            print(
-                f"DEBUG part {part_index}:",
-                "has_text =", bool(part_text),
-                "text_length =", len(part_text or ""),
-                "thought =", getattr(part, "thought", False),
-            )
 
     texts = []
 
@@ -97,8 +85,6 @@ def generate_text(prompt: str, max_tokens: int = 3000) -> str:
         )
 
     return text
-
-
 
 
 def parse_json_response(text: str) -> dict:
